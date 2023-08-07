@@ -76,7 +76,6 @@ case "$1" in
      if [ "" == "$dev_nr" ]; then
        dev_nr=1
      elif [ "$dev_nr" = "a" -o "$dev_nr" = "all" ]; then
-       echo {1..$count}
        for (( i=1; i<=$count; i++ ))
        do
          line_nr=$((i+1))
