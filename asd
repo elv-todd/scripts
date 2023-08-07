@@ -66,14 +66,25 @@ case "$1" in
    done
 ;;
 *)
-   count=`adb devices | awk -F '\t' 'NR>1 {if($1 != null) print NR}' | wc -l`
+   count=`adb devices | awk -F '\t' 'NR>1 {if($1 != null) print NR}' | wc -l | xargs`
    if [ $count -gt 1 ]; then
      echo 'Devices:'
      devices | awk -F '\t' '{if($1 != null) print NR ") " $0}'
+     printf 'a|all) All'
      printf '\nSelect device (1): '
      read dev_nr
      if [ "" == "$dev_nr" ]; then
        dev_nr=1
+     elif [ "$dev_nr" = "a" -o "$dev_nr" = "all" ]; then
+       echo {1..$count}
+       for (( i=1; i<=$count; i++ ))
+       do
+         line_nr=$((i+1))
+         ser=`adb devices | awk -F '\t' "NR==${line_nr} {print \\$1}"`
+         (export ANDROID_SERIAL=$ser; "$@")
+       done
+       exit 0
+
      elif [ $dev_nr -gt $count ] || [ $dev_nr -lt 1 ]; then
        echo "Wrong device number!"
        exit 1
