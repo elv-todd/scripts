@@ -1,0 +1,5 @@
+case "$1" in
+"") gsed -e 's/\x1b\[[0-9;]*m//g' ;;
+*) gsed -e 's/\x1b\[[0-9;]*m//g' < $1 ;;
+esac
+
